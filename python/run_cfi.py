@@ -19,6 +19,7 @@ process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(10))
 # Define files of dataset
 #files = FileUtils.loadListFromFile("filelist.txt")
 files = ["file:/home/wunsch/workspace/fastsim/CMSSW_9_2_10/src/miniAOD-prod_PAT.root"]
+#files = ["file:/home/jbechtel/F2283B5C-6044-E811-B61D-0025905B859A.root"]
 
 process.source = cms.Source(
             "PoolSource", fileNames=cms.untracked.vstring(*files))

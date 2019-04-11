@@ -6,21 +6,18 @@
 #include <iostream>
 #include <memory>
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "DataFormats/Common/interface/Ref.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "math.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 #include "TFile.h"
 #include "TTree.h"
@@ -45,6 +42,9 @@ private:
   Int_t v_run;
   UInt_t v_lumi_block;
   ULong64_t v_event;
+
+  // Tokens
+  edm::EDGetTokenT<pat::TauCollection> t_taus;
 };
 
 ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
@@ -56,6 +56,9 @@ ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
   tree->Branch("run", &v_run);
   tree->Branch("luminosityBlock", &v_lumi_block);
   tree->Branch("event", &v_event);
+
+  // Consumers
+  t_taus = consumes<pat::TauCollection>(edm::InputTag("slimmedTaus", "", "PAT"));
 }
 
 ntupleBuilder::~ntupleBuilder() {}
@@ -70,9 +73,10 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
 
   // Taus
   edm::Handle<pat::TauCollection> taus;
-  iEvent.getByLabel(edm::InputTag("slimmedTaus"), taus);
+  iEvent.getByToken(t_taus, taus);
 
   for (auto tau = taus->begin(); tau != taus->end(); tau++) {
+      std::cout << tau->pt() << std::endl;
   }
 
   /*
