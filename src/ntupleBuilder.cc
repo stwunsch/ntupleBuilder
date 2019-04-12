@@ -218,7 +218,7 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   if (taus->size() < 2) return;
 
   // Ensure that we can match both taus to different generator taus
-  const float min_dr = 0.5; // Minimum deltaR valid for matching
+  const float min_dr = 0.3; // Minimum deltaR valid for matching
   const auto idx1 = FindTau(taus, t1_vis_p4, min_dr);
   const auto idx2 = FindTau(taus, t2_vis_p4, min_dr);
   if (idx1 == -1 || idx2 == -1) return;
