@@ -11,7 +11,7 @@ echo "ID:" $ID
 MASS=125
 echo "Mass:" $MASS
 
-NUM_EVENTS=100
+NUM_EVENTS=10000
 echo "Number of events:" $RUNDIR
 
 RUNDIR=$PWD
@@ -31,6 +31,8 @@ echo "Where am I?" `pwd`
 echo "What is my system?" `uname -a`
 
 echo "### Begin of job"
+
+echo "Start job at" `date`
 
 echo "### Go to rundir"
 
@@ -102,3 +104,5 @@ cp miniAOD-prod_PAT.root $OUTPUTDIR/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVEN
 cp output.root $OUTPUTDIR/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
 
 echo "### End of job"
+
+echo "End job at" `date`
