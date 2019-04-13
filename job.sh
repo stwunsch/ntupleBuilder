@@ -92,7 +92,7 @@ cmsDriver.py miniAOD-prod \
 
 echo "### Run ntupleBuilder analyzer on MiniAOD"
 
-sed -i -e "s,^files =,files = ['miniAOD-prod_PAT.root'] #,g" workspace/ntupleBuilder/python/run_cfi.py
+sed -i -e "s,^files =,files = ['file:miniAOD-prod_PAT.root'] #,g" workspace/ntupleBuilder/python/run_cfi.py
 cmsRun workspace/ntupleBuilder/python/run_cfi.py
 
 echo "### Copy files to output folder"
