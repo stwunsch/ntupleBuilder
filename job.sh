@@ -56,7 +56,7 @@ echo "### Copy generator snipplet and set mass"
 
 cp workspace/ntupleBuilder/python/generatorSnipplet_cfi.py Configuration/Generator/python
 
-sed -i "s,MASS,"$MASS",g" Configuration/Generator/python
+sed -i "s,MASS,"$MASS",g" Configuration/Generator/python/generatorSnipplet_cfi.py
 
 echo "### Build CMSSW"
 
@@ -90,13 +90,15 @@ cmsDriver.py miniAOD-prod \
         --era ${ERA} \
         --customise_commands 'del process.patTrigger; del process.selectedPatTrigger'
 
-echo "### Copy MiniAOD to output folder"
-
-mkdir -p $OUTPUTDIR
-cp miniAOD-prod_PAT.root $OUTPUTDIR/${ID}_${MASS}_${NUM_EVENTS}_
-
 echo "### Run ntupleBuilder analyzer on MiniAOD"
 
-echo "TODO"
+sed -i -e "s,^files =,files = ['miniAOD-prod_PAT.root'] #,g" workspace/ntupleBuilder/python/run_cfi.py
+cmsRun workspace/ntupleBuilder/python/run_cfi.py
+
+echo "### Copy files to output folder"
+
+mkdir -p $OUTPUTDIR
+cp miniAOD-prod_PAT.root $OUTPUTDIR/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+cp output.root $OUTPUTDIR/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
 
 echo "### End of job"
