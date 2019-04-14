@@ -23,6 +23,9 @@ echo "EOS home:" $EOS_HOME
 OUTPUTDIR=${EOS_HOME}/mass_regression/
 echo "Outputdir:" $OUTPUTDIR
 
+SCRAM_ARCH=slc6_amd64_gcc530
+echo "SCRAM arch:" $SCRAM_ARCH
+
 echo "### System"
 
 echo "Hostname:" `hostname`
