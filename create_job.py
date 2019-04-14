@@ -11,6 +11,7 @@ executable = ./job.sh
 output = out/$(ProcId).$(ClusterID).out
 error = err/$(ProcId).$(ClusterID).err
 log = log/$(ProcId).$(ClusterID).log
+requirements = (OpSysAndVer =?= "SLCern6")
 max_retries = 3
 RequestCpus = 1
 +MaxRuntime = 28800
