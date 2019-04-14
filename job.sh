@@ -106,8 +106,8 @@ echo "### Copy files to output folder"
 ls -la $EOS_HOME
 
 mkdir -p $OUTPUTDIR
-xrdcp -f miniAOD-prod_PAT.root root://eosuser.cern.ch/${OUTPUT_DIR}/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
-xrdcp -f output.root root://eosuser.cern.ch/${OUTPUT_DIR}/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+xrdcp -f miniAOD-prod_PAT.root root://eosuser.cern.ch/${OUTPUTDIR}/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+xrdcp -f output.root root://eosuser.cern.ch/${OUTPUTDIR}/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
 
 echo "### End of job"
 
