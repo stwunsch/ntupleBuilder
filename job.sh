@@ -5,19 +5,22 @@ set -e
 
 echo "### Configuration"
 
-ID=0
+ID=$1
 echo "ID:" $ID
 
-MASS=125
+MASS=$2
 echo "Mass:" $MASS
 
-NUM_EVENTS=10000
+NUM_EVENTS=$3
 echo "Number of events:" $RUNDIR
 
 RUNDIR=$PWD
 echo "Rundir:" $RUNDIR
 
-OUTPUTDIR=/ceph/wunsch/foo/
+EOS_HOME=/eos/user/s/swunsch
+echo "EOS home:" $EOS_HOME
+
+OUTPUTDIR=${EOS_HOME}/mass_regression/
 echo "Outputdir:" $OUTPUTDIR
 
 echo "### System"
@@ -99,9 +102,12 @@ cmsRun workspace/ntupleBuilder/python/run_cfi.py
 
 echo "### Copy files to output folder"
 
+# Trigger auto mount of EOS
+ls -la $EOS_HOME
+
 mkdir -p $OUTPUTDIR
-cp miniAOD-prod_PAT.root $OUTPUTDIR/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
-cp output.root $OUTPUTDIR/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+xrdcp -f miniAOD-prod_PAT.root root://eosuser.cern.ch/${OUTPUT_DIR}/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+xrdcp -f output.root root://eosuser.cern.ch/${OUTPUT_DIR}/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
 
 echo "### End of job"
 
