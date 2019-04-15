@@ -39,7 +39,7 @@ def main(args):
     mass_points = range(50, 250)
     print("Mass points: {}".format(mass_points))
     for mass in mass_points:
-        arguments.append("%u %f %u" % (counter, mass, num_events))
+        arguments.append("%u %f %u\n" % (counter, mass, num_events))
         counter += 1
     print("Number of jobs: %u" % len(arguments))
 
