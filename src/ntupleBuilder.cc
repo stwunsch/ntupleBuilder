@@ -28,14 +28,18 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 
 template <typename T>
-reco::Candidate::LorentzVector getVisibleP4(T x) {
-  auto p4 = x->p4();
+void subtractInvisible(reco::Candidate::LorentzVector& p4, T& x) {
   for (auto d = x->begin(); d != x->end(); d++) {
     const auto pdgId = d->pdgId();
-    if (pdgId == 16 || pdgId == 18)
+    if (std::abs(pdgId) == 12 ||
+        std::abs(pdgId) == 14 ||
+        std::abs(pdgId) == 16 ||
+        std::abs(pdgId) == 18)
+    {
       p4 = p4 - d->p4();
+    }
+    subtractInvisible(p4, d);
   }
-  return p4;
 }
 
 void AddP4Branch(TTree *tree, float *v, TString name) {
@@ -190,10 +194,14 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   SetP4Values(t2_p4, v_t2_gen);
 
   // Get four-vector of visible tau components
-  // TODO: To be implemented correctly.
-  auto t1_vis_p4 = getVisibleP4(t1);
-  auto t2_vis_p4 = getVisibleP4(t2);
+  auto t1_vis_p4 = t1_p4;
+  subtractInvisible(t1_vis_p4, t1);
+  if (t1_vis_p4 == t1_p4) throw std::runtime_error("Tau 1 does not have any neutrinos.");
   SetP4Values(t1_vis_p4, v_t1_genvis);
+
+  auto t2_vis_p4 = t2_p4;
+  subtractInvisible(t2_vis_p4, t2);
+  if (t2_vis_p4 == t2_p4) throw std::runtime_error("Tau 2 does not have any neutrinos.");
   SetP4Values(t2_vis_p4, v_t2_genvis);
 
   // Reconstructed MET
