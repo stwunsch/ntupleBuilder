@@ -89,7 +89,12 @@ cmsDriver.py generatorSnipplet_cfi \
         --eventcontent AODSIM \
         -s GEN,SIM,RECOBEFMIX,DIGI:pdigi_valid,RECO \
         --datatier GEN-SIM-DIGI-RECO \
-        --beamspot Realistic25ns13TeVEarly2017Collision
+        --beamspot Realistic25ns13TeVEarly2017Collision \
+        --no_exec
+
+# Set random seed with job id
+sed -i "s/Services_cff')/Services_cff'); process.RandomNumberGeneratorService.generator.initialSeed = "${ID}"/g" generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
+cmsRun generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
 
 echo "### Create MiniAOD"
 
@@ -103,7 +108,10 @@ cmsDriver.py miniAOD-prod \
         --filein file://generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.root \
         --conditions ${CONDITIONS} \
         --era ${ERA} \
-        --customise_commands 'del process.patTrigger; del process.selectedPatTrigger'
+        --customise_commands 'del process.patTrigger; del process.selectedPatTrigger' \
+        --no_exec
+
+cmsRun miniAOD-prod_PAT.py
 
 echo "### Run ntupleBuilder analyzer on MiniAOD"
 
