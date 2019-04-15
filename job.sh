@@ -17,6 +17,9 @@ echo "Number of events:" $RUNDIR
 RUNDIR=$PWD
 echo "Rundir:" $RUNDIR
 
+export HOME=$PWD
+echo "HOME:" $HOME
+
 EOS_HOME=/eos/user/s/swunsch
 echo "EOS home:" $EOS_HOME
 
@@ -52,6 +55,10 @@ cd CMSSW_9_2_10/src
 eval `scramv1 runtime -sh`
 
 echo "### Add Configuration/Generator"
+
+git config --global user.name 'Foo'
+git config --global user.email'foo@bar.ch'
+git config --global user.github 'foo'
 
 git cms-addpkg Configuration/Generator
 
