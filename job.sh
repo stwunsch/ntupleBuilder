@@ -57,7 +57,7 @@ eval `scramv1 runtime -sh`
 echo "### Add Configuration/Generator"
 
 git config --global user.name 'Foo'
-git config --global user.email'foo@bar.ch'
+git config --global user.email 'foo@bar.ch'
 git config --global user.github 'foo'
 
 git cms-addpkg Configuration/Generator
