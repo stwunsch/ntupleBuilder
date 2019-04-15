@@ -25,7 +25,7 @@ def mkdir(path):
 
 
 def parse_arguments():
-    if not len(sys.argv) == 3:
+    if not len(sys.argv) == 2:
         raise Exception("./create_job.py PATH_TO_JOBDIR")
     return {"jobdir": sys.argv[1]}
 
@@ -33,17 +33,18 @@ def parse_arguments():
 def main(args):
     # Build argument list
     num_events = 10000
-    print("Number of events per mass point:", num_events)
-    print("Argument list:")
+    print("Number of events per mass point: {}".format(num_events))
     arguments = []
     counter = 0
-    for mass in range(50, 250):
+    mass_points = range(50, 250)
+    print("Mass points: {}".format(mass_points))
+    for mass in mass_points:
         arguments.append("%u %f %u" % (counter, mass, num_events))
         counter += 1
     print("Number of jobs: %u" % len(arguments))
 
     # Create jobdir and subdirectories
-    jobdir = os.path.join(args["jobdir"], process)
+    jobdir = os.path.join(args["jobdir"])
     print("Jobdir: %s" % jobdir)
     mkdir(jobdir)
     mkdir(os.path.join(jobdir, "out"))
@@ -52,7 +53,7 @@ def main(args):
 
     # Write jdl file
     out = open(os.path.join(jobdir, "job.jdl"), "w")
-    out.write(jdl.format(PROCESS=process))
+    out.write(jdl)
     out.close()
 
     # Write argument list
@@ -63,7 +64,7 @@ def main(args):
 
     # Write job file
     jobfile = open("job.sh", "r").read()
-    job = open(os.path.join(jobdir, "{PROCESS}.sh".format(PROCESS=process)), "w")
+    job = open(os.path.join(jobdir, "job.sh"), "w")
     job.write(jobfile)
     job.close()
 
