@@ -33,11 +33,11 @@ def parse_arguments():
 def main(args):
     # Build argument list
     num_events = 10000
-    print("Number of events per mass point: {}".format(num_events))
+    print("Number of events per mass point: %u"%(num_events))
     arguments = []
     counter = 0
     mass_points = range(50, 250)
-    print("Mass points: {}".format(mass_points))
+    print("Mass points:",mass_points)
     for mass in mass_points:
         arguments.append("%u %u %u\n" % (counter, mass, num_events))
         counter += 1
