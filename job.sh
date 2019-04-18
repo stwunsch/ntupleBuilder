@@ -77,10 +77,30 @@ echo "### Build CMSSW"
 
 scram b
 
-echo "### Run simulation and create AODSIM"
+echo "### Create AODSIM with pile-up"
 
 ERA="Run2_25ns"
 CONDITIONS="auto:run2_mc"
+BEAMSPOT="Realistic25ns13TeVEarly2017Collision"
+
+cmsDriver.py MinBias_13TeV_pythia8_TuneCUETP8M1_cfi \
+    --conditions ${CONDITIONS} \
+    --fast \
+    -n ${NUM_EVENTS} \
+    --era ${ERA} \
+    --eventcontent FASTPU \
+    -s GEN,SIM,RECOBEFMIX,DIGI:pdigi_valid,RECO \
+    --datatier GEN-SIM-RECO \
+    --beamspot ${BEAMSPOT} \
+    --no_exec
+
+# Set random seed with job id
+sed -i "s/Services_cff')/Services_cff'); process.RandomNumberGeneratorService.generator.initialSeed = "${ID}"/g" MinBias_13TeV_pythia8_TuneCUETP8M1_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
+
+cmsRun MinBias_13TeV_pythia8_TuneCUETP8M1_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
+
+echo "### Create AODSIM with target process and PU mixing"
+
 cmsDriver.py generatorSnipplet_cfi \
         --conditions ${CONDITIONS} \
         --fast \
@@ -88,13 +108,16 @@ cmsDriver.py generatorSnipplet_cfi \
         --era ${ERA} \
         --eventcontent AODSIM \
         -s GEN,SIM,RECOBEFMIX,DIGI:pdigi_valid,RECO \
-        --datatier GEN-SIM-DIGI-RECO \
-        --beamspot Realistic25ns13TeVEarly2017Collision \
+        --datatier AODSIM \
+        --beamspot ${BEAMSPOT} \
+        --pileup_input file:MinBias_13TeV_pythia8_TuneCUETP8M1_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.root \
+        --pileup AVE_35_BX_25ns \
         --no_exec
 
 # Set random seed with job id
-sed -i "s/Services_cff')/Services_cff'); process.RandomNumberGeneratorService.generator.initialSeed = "${ID}"/g" generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
-cmsRun generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.py
+sed -i "s/Services_cff')/Services_cff'); process.RandomNumberGeneratorService.generator.initialSeed = "${ID}"/g" generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO_PU.py
+
+cmsRun generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO_PU.py
 
 echo "### Create MiniAOD"
 
@@ -105,7 +128,7 @@ cmsDriver.py miniAOD-prod \
         --mc \
         --fast \
         -n ${NUM_EVENTS} \
-        --filein file://generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO.root \
+        --filein file://generatorSnipplet_cfi_GEN_SIM_RECOBEFMIX_DIGI_RECO_PU.root \
         --conditions ${CONDITIONS} \
         --era ${ERA} \
         --customise_commands 'del process.patTrigger; del process.selectedPatTrigger' \
