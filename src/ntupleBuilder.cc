@@ -120,6 +120,12 @@ private:
   int v_t1_rec_dm;
   int v_t2_rec_dm;
 
+  // Charge
+  int v_t1_gen_q;
+  int v_t2_gen_q;
+  int v_t1_rec_q;
+  int v_t2_rec_q;
+
   // Tokens
   edm::EDGetTokenT<pat::TauCollection> t_taus;
   edm::EDGetTokenT<pat::METCollection> t_mets;
@@ -151,6 +157,12 @@ ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
   // Decay modes
   tree->Branch("t1_rec_dm", &v_t1_rec_dm, "t1_rec_dm/I");
   tree->Branch("t2_rec_dm", &v_t2_rec_dm, "t2_rec_dm/I");
+
+  // Charge
+  tree->Branch("t1_rec_q", &v_t1_rec_q, "t1_rec_q/I");
+  tree->Branch("t2_rec_q", &v_t2_rec_q, "t2_rec_q/I");
+  tree->Branch("t1_gen_q", &v_t1_gen_q, "t1_gen_q/I");
+  tree->Branch("t2_gen_q", &v_t2_gen_q, "t2_gen_q/I");
 
   // Consumers
   t_taus =
@@ -200,6 +212,11 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   auto t2_p4 = t2->p4();
   SetP4Values(t1_p4, v_t1_gen);
   SetP4Values(t2_p4, v_t2_gen);
+  v_t1_gen_q = t1->charge();
+  v_t2_gen_q = t2->charge();
+
+  if (v_t1_gen_q == v_t2_gen_q)
+      throw std::runtime_error("Generator taus have same charge.");
 
   // Get four-vector of visible tau components
   auto t1_vis_p4 = t1_p4;
@@ -244,6 +261,11 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   v_t1_rec_dm = taus->at(idx1).decayMode();
   v_t2_rec_dm = taus->at(idx2).decayMode();
   if (v_t1_rec_dm < 0 || v_t2_rec_dm < 0) return;
+
+  // Ensure that the taus have opposite charge
+  v_t1_rec_q = taus->at(idx1).charge();
+  v_t2_rec_q = taus->at(idx2).charge();
+  if (v_t1_rec_q == v_t2_rec_q) return;
 
   // Fill four-vector
   auto t1_rec_p4 = taus->at(idx1).p4();
