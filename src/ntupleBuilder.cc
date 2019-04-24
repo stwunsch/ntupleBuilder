@@ -116,6 +116,10 @@ private:
   // Reco MET
   float v_met_rec[2];
 
+  // Decay modes
+  int v_t1_rec_dm;
+  int v_t2_rec_dm;
+
   // Tokens
   edm::EDGetTokenT<pat::TauCollection> t_taus;
   edm::EDGetTokenT<pat::METCollection> t_mets;
@@ -143,6 +147,10 @@ ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
   AddP4Branch(tree, v_t2_rec, "t2_rec");
   tree->Branch("met_rec_px", v_met_rec + 0, "met_rec_px/F");
   tree->Branch("met_rec_py", v_met_rec + 1, "met_rec_py/F");
+
+  // Decay modes
+  tree->Branch("t1_rec_dm", &v_t1_rec_dm, "t1_rec_dm/I");
+  tree->Branch("t2_rec_dm", &v_t2_rec_dm, "t2_rec_dm/I");
 
   // Consumers
   t_taus =
@@ -231,6 +239,11 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   const auto idx2 = FindTau(taus, t2_vis_p4, min_dr);
   if (idx1 == -1 || idx2 == -1) return;
   if (idx1 == idx2) return;
+
+  // Ensure that both taus have a reconstructed decay mode
+  v_t1_rec_dm = taus->at(idx1).decayMode();
+  v_t2_rec_dm = taus->at(idx2).decayMode();
+  if (v_t1_rec_dm < 0 || v_t2_rec_dm < 0) return;
 
   // Fill four-vector
   auto t1_rec_p4 = taus->at(idx1).p4();
