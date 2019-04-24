@@ -24,18 +24,15 @@
 
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Math/interface/deltaR.h"
-#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 
 template <typename T>
-void subtractInvisible(reco::Candidate::LorentzVector& p4, T& x) {
+void subtractInvisible(reco::Candidate::LorentzVector &p4, T &x) {
   for (auto d = x->begin(); d != x->end(); d++) {
     const auto pdgId = d->pdgId();
-    if (std::abs(pdgId) == 12 ||
-        std::abs(pdgId) == 14 ||
-        std::abs(pdgId) == 16 ||
-        std::abs(pdgId) == 18)
-    {
+    if (std::abs(pdgId) == 12 || std::abs(pdgId) == 14 ||
+        std::abs(pdgId) == 16 || std::abs(pdgId) == 18) {
       p4 = p4 - d->p4();
     }
     subtractInvisible(p4, d);
@@ -216,25 +213,29 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   v_t2_gen_q = t2->charge();
 
   if (v_t1_gen_q == v_t2_gen_q)
-      throw std::runtime_error("Generator taus have same charge.");
+    throw std::runtime_error("Generator taus have same charge.");
 
   // Get four-vector of visible tau components
   auto t1_vis_p4 = t1_p4;
   subtractInvisible(t1_vis_p4, t1);
-  if (t1_vis_p4 == t1_p4) throw std::runtime_error("Tau 1 does not have any neutrinos.");
+  if (t1_vis_p4 == t1_p4)
+    throw std::runtime_error("Tau 1 does not have any neutrinos.");
   SetP4Values(t1_vis_p4, v_t1_genvis);
 
   auto t2_vis_p4 = t2_p4;
   subtractInvisible(t2_vis_p4, t2);
-  if (t2_vis_p4 == t2_p4) throw std::runtime_error("Tau 2 does not have any neutrinos.");
+  if (t2_vis_p4 == t2_p4)
+    throw std::runtime_error("Tau 2 does not have any neutrinos.");
   SetP4Values(t2_vis_p4, v_t2_genvis);
 
   // Reconstructed MET
   edm::Handle<pat::METCollection> mets;
   iEvent.getByToken(t_mets, mets);
 
-  if (mets->size() != 1) throw std::runtime_error("Found no MET.");
-  if (mets->at(0).isPFMET() == false) throw std::runtime_error("MET is no PFMet.");
+  if (mets->size() != 1)
+    throw std::runtime_error("Found no MET.");
+  if (mets->at(0).isPFMET() == false)
+    throw std::runtime_error("MET is no PFMet.");
 
   v_met_rec[0] = mets->at(0).corPx();
   v_met_rec[1] = mets->at(0).corPy();
@@ -248,24 +249,29 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   iEvent.getByToken(t_taus, taus);
 
   // Ensure that we have two reconstructed taus
-  if (taus->size() < 2) return;
+  if (taus->size() < 2)
+    return;
 
   // Ensure that we can match both taus to different generator taus
   const float min_dr = 0.3; // Minimum deltaR valid for matching
   const auto idx1 = FindTau(taus, t1_vis_p4, min_dr);
   const auto idx2 = FindTau(taus, t2_vis_p4, min_dr);
-  if (idx1 == -1 || idx2 == -1) return;
-  if (idx1 == idx2) return;
+  if (idx1 == -1 || idx2 == -1)
+    return;
+  if (idx1 == idx2)
+    return;
 
   // Ensure that both taus have a reconstructed decay mode
   v_t1_rec_dm = taus->at(idx1).decayMode();
   v_t2_rec_dm = taus->at(idx2).decayMode();
-  if (v_t1_rec_dm < 0 || v_t2_rec_dm < 0) return;
+  if (v_t1_rec_dm < 0 || v_t2_rec_dm < 0)
+    return;
 
   // Ensure that the taus have opposite charge
   v_t1_rec_q = taus->at(idx1).charge();
   v_t2_rec_q = taus->at(idx2).charge();
-  if (v_t1_rec_q == v_t2_rec_q) return;
+  if (v_t1_rec_q == v_t2_rec_q)
+    return;
 
   // Fill four-vector
   auto t1_rec_p4 = taus->at(idx1).p4();
