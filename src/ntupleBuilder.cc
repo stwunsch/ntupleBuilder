@@ -277,6 +277,8 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   v_t2_rec_q = taus->at(idx2).charge();
   if (v_t1_rec_q == v_t2_rec_q)
     return;
+  if (v_t1_rec_q == 0 || v_t2_rec_q == 0)
+    return;
 
   // Fill four-vector
   auto t1_rec_p4 = taus->at(idx1).p4();
@@ -292,6 +294,14 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   if (std::abs(taus->at(idx2).eta()) > 2.1) return;
 
   if (deltaR(t1_rec_p4, t2_rec_p4) < 0.5) return;
+
+  const auto nameDM = "decayModeFinding";
+  if (taus->at(idx1).tauID(nameDM) < 0.5) return;
+  if (taus->at(idx2).tauID(nameDM) < 0.5) return;
+
+  const auto nameIso = "byVVLooseIsolationMVArun2017v2DBoldDMwLT2017";
+  if (taus->at(idx1).tauID(nameIso) < 0.5) return;
+  if (taus->at(idx2).tauID(nameIso) < 0.5) return;
 
   // Fill event
   tree->Fill();
