@@ -283,8 +283,8 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   if (taus->at(idx1).pt() < 40) return;
   if (taus->at(idx2).pt() < 40) return;
 
-  if (std::abs(taus->at(idx1).eta()) < 2.1) return;
-  if (std::abs(taus->at(idx2).eta()) < 2.1) return;
+  if (std::abs(taus->at(idx1).eta()) > 2.1) return;
+  if (std::abs(taus->at(idx2).eta()) > 2.1) return;
 
   if (deltaR(t1_rec_p4, t2_rec_p4) < 0.5) return;
 
