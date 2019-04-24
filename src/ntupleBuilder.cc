@@ -299,7 +299,7 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   if (taus->at(idx1).tauID(nameDM) < 0.5) return;
   if (taus->at(idx2).tauID(nameDM) < 0.5) return;
 
-  const auto nameIso = "byVVLooseIsolationMVArun2017v2DBoldDMwLT2017";
+  const auto nameIso = "byVLooseIsolationMVArun2v1DBoldDMwLT";
   if (taus->at(idx1).tauID(nameIso) < 0.5) return;
   if (taus->at(idx2).tauID(nameIso) < 0.5) return;
 
