@@ -205,6 +205,11 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
     throw std::runtime_error("Failed to find two tau daughters.");
   auto t1 = h.daughterRef(0);
   auto t2 = h.daughterRef(1);
+  if (t1->pt() < t2->pt()) { // Make taus pt ordered
+      const auto tmp = t1;
+      t1 = t2;
+      t2 = tmp;
+  }
   auto t1_p4 = t1->p4();
   auto t2_p4 = t2->p4();
   SetP4Values(t1_p4, v_t1_gen);
