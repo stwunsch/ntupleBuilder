@@ -279,6 +279,15 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   SetP4Values(t1_rec_p4, v_t1_rec);
   SetP4Values(t2_rec_p4, v_t2_rec);
 
+  // Apply baseline selection
+  if (taus->at(idx1).pt() < 40) return;
+  if (taus->at(idx2).pt() < 40) return;
+
+  if (std::abs(taus->at(idx1).eta()) < 2.1) return;
+  if (std::abs(taus->at(idx2).eta()) < 2.1) return;
+
+  if (deltaR(t1_rec_p4, t2_rec_p4) < 0.5) return;
+
   // Fill event
   tree->Fill();
 }
