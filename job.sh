@@ -8,10 +8,13 @@ echo "### Configuration"
 ID=$1
 echo "ID:" $ID
 
-MASS=$2
+TYPE=$2
+echo "Type:" $TYPE
+
+MASS=$3
 echo "Mass:" $MASS
 
-NUM_EVENTS=$3
+NUM_EVENTS=$4
 echo "Number of events:" $RUNDIR
 
 RUNDIR=$PWD
@@ -67,11 +70,24 @@ echo "### Add ntupleBuilder"
 mkdir -p workspace
 git clone https://github.com/stwunsch/ntupleBuilder workspace/ntupleBuilder --depth 1
 
-echo "### Copy generator snipplet and set mass"
+echo "### Copy generator snipplet and set properties"
 
 cp workspace/ntupleBuilder/python/generatorSnipplet_cfi.py Configuration/Generator/python
 
 sed -i "s,MASS,"$MASS",g" Configuration/Generator/python/generatorSnipplet_cfi.py
+
+GGH_TOGGLE="off"
+QQH_TOGGLE="off"
+if [ "$TYPE" = "GGH" ]; then
+    GGH_TOGGLE="on"
+    echo "Turn GGH mode on."
+fi
+if [ "$TYPE" = "QQH" ]; then
+    QQH_TOGGLE="on"
+    echo "Turn QQH mode on."
+fi
+sed -i "s,GGH,"$GGH_TOGGLE",g" Configuration/Generator/python/generatorSnipplet_cfi.py
+sed -i "s,QQH,"$QQH_TOGGLE",g" Configuration/Generator/python/generatorSnipplet_cfi.py
 
 echo "### Build CMSSW"
 
@@ -147,8 +163,8 @@ echo "### Copy files to output folder"
 ls -la $EOS_HOME
 
 mkdir -p $OUTPUTDIR
-xrdcp -f miniAOD-prod_PAT.root root://eosuser.cern.ch/${OUTPUTDIR}/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
-xrdcp -f output.root root://eosuser.cern.ch/${OUTPUTDIR}/ntuple_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+#xrdcp -f miniAOD-prod_PAT.root root://eosuser.cern.ch/${OUTPUTDIR}/MiniAOD_id${ID}_mass${MASS}_events${NUM_EVENTS}.root
+xrdcp -f output.root root://eosuser.cern.ch/${OUTPUTDIR}/ntuple_id${ID}_type${TYPE}_mass${MASS}_events${NUM_EVENTS}.root
 
 echo "### End of job"
 

@@ -17,7 +17,9 @@ generator = cms.EDFilter("Pythia8GeneratorFilter",
         pythia8CUEP8M1SettingsBlock,
         processParameters = cms.vstring(
             'HiggsSM:all = off',
-            'HiggsSM:gg2H = on',
+            'HiggsSM:gg2H = GGH',
+            'HiggsSM:ff2Hff(t:ZZ) = QQH'
+            'HiggsSM:ff2Hff(t:WW) = QQH'
             '25:onMode = off',
             '25:onIfMatch = 15 -15',
             '25:m0 = MASS',
