@@ -184,16 +184,18 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   edm::Handle<reco::GenParticleCollection> gens;
   iEvent.getByToken(t_gens, gens);
 
+  const auto targetBoson = int(PDG_ID); // NOTE: To be replaced before compilation by job script.
+
   std::vector<reco::GenParticle> higgsCands;
   for (auto gen = gens->begin(); gen != gens->end(); gen++) {
-    if (gen->pdgId() == 25 && gen->isLastCopy() == 1) {
+    if (gen->pdgId() == targetBoson && gen->isLastCopy() == 1) {
       if (higgsCands.size() != 0)
-        throw std::runtime_error("Found more than one Higgs?");
+          std::cerr << "WARNING: Found more than one target boson with PDG id " << targetBoson << "!" << std::endl;
       higgsCands.emplace_back(*gen);
     }
   }
   if (higgsCands.size() != 1)
-    throw std::runtime_error("Failed to find a Higgs.");
+      return;
 
   // Get generator Higgs
   auto h = higgsCands[0];

@@ -70,24 +70,27 @@ echo "### Add ntupleBuilder"
 mkdir -p workspace
 git clone https://github.com/stwunsch/ntupleBuilder workspace/ntupleBuilder --depth 1
 
+PDG_ID=-1
+if [ $TYPE = "GGH" ]; then
+    PDG_ID=25
+fi
+
+if [ $TYPE = "QQH" ]; then
+    PDG_ID=25
+fi
+if [ $TYPE = "DY" ]; then
+    PDG_ID=23
+fi
+
+sed -i "s,PDG_ID,"$PDG_ID",g" workspace/ntupleBuilder/ntupleBuilder.cc
+
 echo "### Copy generator snipplet and set properties"
 
-cp workspace/ntupleBuilder/python/generatorSnipplet_cfi.py Configuration/Generator/python
+cp workspace/ntupleBuilder/python/generatorSnipplet_${TYPE}_cfi.py Configuration/Generator/python
 
 sed -i "s,MASS,"$MASS",g" Configuration/Generator/python/generatorSnipplet_cfi.py
-
-GGH_TOGGLE="off"
-QQH_TOGGLE="off"
-if [ "$TYPE" = "GGH" ]; then
-    GGH_TOGGLE="on"
-    echo "Turn GGH mode on."
-fi
-if [ "$TYPE" = "QQH" ]; then
-    QQH_TOGGLE="on"
-    echo "Turn QQH mode on."
-fi
-sed -i "s,GGH,"$GGH_TOGGLE",g" Configuration/Generator/python/generatorSnipplet_cfi.py
-sed -i "s,QQH,"$QQH_TOGGLE",g" Configuration/Generator/python/generatorSnipplet_cfi.py
+sed -i "s,MASS_MIN,"$(expr $MASS + 1)",g" Configuration/Generator/python/generatorSnipplet_cfi.py
+sed -i "s,MASS_MAX,"$(expr $MASS - 1)",g" Configuration/Generator/python/generatorSnipplet_cfi.py
 
 echo "### Build CMSSW"
 
