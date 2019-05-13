@@ -89,6 +89,7 @@ private:
   // Generator Higgs
   float v_h_gen[4];
   int v_h_gen_pdgid;
+  float v_h_gen_mass;
 
   // Generator tau 1
   float v_t1_gen[4];
@@ -143,6 +144,7 @@ ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
   // Four-vectors
   AddP4Branch(tree, v_h_gen, "h_gen");
   tree->Branch("h_gen_pdgid", &v_h_gen_pdgid, "h_gen_pdgid/I");
+  tree->Branch("h_gen_mass", &v_h_gen_mass, "h_gen_mass/F");
   AddP4Branch(tree, v_t1_gen, "t1_gen");
   AddP4Branch(tree, v_t2_gen, "t2_gen");
   AddP4Branch(tree, v_t1_genvis, "t1_genvis");
@@ -187,7 +189,6 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   iEvent.getByToken(t_gens, gens);
 
   const int targetBoson = PDG_ID; // NOTE: To be replaced before compilation by job script.
-  v_h_gen_pdgid = targetBoson;
 
   std::vector<reco::GenParticle> higgsCands;
   for (auto gen = gens->begin(); gen != gens->end(); gen++) {
@@ -204,6 +205,8 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   auto h = higgsCands[0];
   auto h_p4 = h.p4();
   SetP4Values(h_p4, v_h_gen);
+  v_h_gen_mass = h_p4.mass();
+  v_h_gen_pdgid = h.pdgId();
 
   // Get generator taus
   if (h.numberOfDaughters() != 2)
