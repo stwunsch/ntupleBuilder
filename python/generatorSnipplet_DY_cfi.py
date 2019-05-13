@@ -16,7 +16,8 @@ generator = cms.EDFilter("Pythia8GeneratorFilter",
         pythia8CommonSettingsBlock,
         pythia8CUEP8M1SettingsBlock,
         processParameters = cms.vstring(
-            'WeakSingleBoson:ffbar2gmZ = on'
+            'WeakSingleBoson:all = off',
+            'WeakSingleBoson:ffbar2gmZ = on',
             '23:onMode = off',
             '23:onIfMatch = 15 -15',
             '23:m0 = MASS',
