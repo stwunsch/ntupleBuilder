@@ -33,15 +33,15 @@ def parse_arguments():
 def main(args):
     # Build argument list
     num_events = 1000
-    boson_type = "QQH" # or "GGH"
     print("Number of events per mass point: %u"%(num_events))
     arguments = []
     counter = 0
     mass_points = range(50, 200) * 100
     print("Mass points:",mass_points)
     for mass in mass_points:
-        arguments.append("%u %s %u %u\n" % (counter, boson_type, mass, num_events))
-        counter += 1
+        for boson_type in ["GGH", "QQH"]:
+            arguments.append("%u %s %u %u\n" % (counter, boson_type, mass, num_events))
+            counter += 1
     print("Number of jobs: %u" % len(arguments))
 
     # Create jobdir and subdirectories
