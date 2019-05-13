@@ -190,7 +190,7 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   edm::Handle<reco::GenParticleCollection> gens;
   iEvent.getByToken(t_gens, gens);
 
-  const std::string processType = TYPE; // NOTE: To be replace before compilation by the job script.
+  const std::string processType = "TYPE"; // NOTE: To be replace before compilation by the job script.
   if (processType.compare("GGH") == 0) {
       v_h_gen_process = 0;
       v_h_gen_pdgid = 25;
