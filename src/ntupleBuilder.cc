@@ -89,6 +89,7 @@ private:
   // Generator Higgs
   float v_h_gen[4];
   int v_h_gen_pdgid;
+  int v_h_gen_process;
   float v_h_gen_mass;
 
   // Generator tau 1
@@ -145,6 +146,7 @@ ntupleBuilder::ntupleBuilder(const edm::ParameterSet &iConfig) {
   AddP4Branch(tree, v_h_gen, "h_gen");
   tree->Branch("h_gen_pdgid", &v_h_gen_pdgid, "h_gen_pdgid/I");
   tree->Branch("h_gen_mass", &v_h_gen_mass, "h_gen_mass/F");
+  tree->Branch("h_gen_process", &v_h_gen_process, "h_gen_process/I");
   AddP4Branch(tree, v_t1_gen, "t1_gen");
   AddP4Branch(tree, v_t2_gen, "t2_gen");
   AddP4Branch(tree, v_t1_genvis, "t1_genvis");
@@ -188,13 +190,25 @@ void ntupleBuilder::analyze(const edm::Event &iEvent,
   edm::Handle<reco::GenParticleCollection> gens;
   iEvent.getByToken(t_gens, gens);
 
-  const int targetBoson = PDG_ID; // NOTE: To be replaced before compilation by job script.
+  const std::string processType = TYPE; // NOTE: To be replace before compilation by the job script.
+  if (processType.compare("GGH") == 0) {
+      v_h_gen_process = 0;
+      v_h_gen_pdgid = 25;
+  } else if (processType.compare("QQH") == 0) {
+      v_h_gen_process = 1;
+      v_h_gen_pdgid = 25;
+  } else if (processType.compare("DY") == 0) {
+      v_h_gen_process = 2;
+      v_h_gen_pdgid = 23;
+  } else {
+      throw std::runtime_error("Unknown process type encountered.");
+  }
 
   std::vector<reco::GenParticle> higgsCands;
   for (auto gen = gens->begin(); gen != gens->end(); gen++) {
-    if (gen->pdgId() == targetBoson && gen->isLastCopy() == 1) {
+    if (gen->pdgId() == v_h_gen_pdgid && gen->isLastCopy() == 1) {
       if (higgsCands.size() != 0)
-          std::cerr << "WARNING: Found more than one target boson with PDG id " << targetBoson << "!" << std::endl;
+          std::cerr << "WARNING: Found more than one target boson with PDG id " << v_h_gen_pdgid << "!" << std::endl;
       higgsCands.emplace_back(*gen);
     }
   }

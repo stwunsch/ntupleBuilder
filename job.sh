@@ -70,19 +70,7 @@ echo "### Add ntupleBuilder"
 mkdir -p workspace
 git clone https://github.com/stwunsch/ntupleBuilder workspace/ntupleBuilder --depth 1
 
-PDG_ID=-1
-if [ $TYPE = "GGH" ]; then
-    PDG_ID=25
-fi
-
-if [ $TYPE = "QQH" ]; then
-    PDG_ID=25
-fi
-if [ $TYPE = "DY" ]; then
-    PDG_ID=23
-fi
-
-sed -i "s,PDG_ID,"$PDG_ID",g" workspace/ntupleBuilder/src/ntupleBuilder.cc
+sed -i "s,TYPE,"$TYPE",g" workspace/ntupleBuilder/src/ntupleBuilder.cc
 
 echo "### Copy generator snipplet and set properties"
 
