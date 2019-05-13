@@ -32,7 +32,7 @@ def parse_arguments():
 
 def main(args):
     # Build argument list
-    num_events = 10000
+    num_events = 1000
     boson_type = "QQH" # or "GGH"
     print("Number of events per mass point: %u"%(num_events))
     arguments = []
