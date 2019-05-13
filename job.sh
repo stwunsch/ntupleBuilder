@@ -86,7 +86,7 @@ sed -i "s,PDG_ID,"$PDG_ID",g" workspace/ntupleBuilder/src/ntupleBuilder.cc
 
 echo "### Copy generator snipplet and set properties"
 
-cp workspace/ntupleBuilder/python/generatorSnipplet_${TYPE}_cfi.py Configuration/Generator/python
+cp workspace/ntupleBuilder/python/generatorSnipplet_${TYPE}_cfi.py Configuration/Generator/python/generatorSnipplet_cfi.py
 
 sed -i "s,MASS,"$MASS",g" Configuration/Generator/python/generatorSnipplet_cfi.py
 sed -i "s,MASS_MIN,"$(expr $MASS + 1)",g" Configuration/Generator/python/generatorSnipplet_cfi.py
