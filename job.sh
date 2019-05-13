@@ -82,7 +82,7 @@ if [ $TYPE = "DY" ]; then
     PDG_ID=23
 fi
 
-sed -i "s,PDG_ID,"$PDG_ID",g" workspace/ntupleBuilder/ntupleBuilder.cc
+sed -i "s,PDG_ID,"$PDG_ID",g" workspace/ntupleBuilder/src/ntupleBuilder.cc
 
 echo "### Copy generator snipplet and set properties"
 
