@@ -36,7 +36,7 @@ def main(args):
     print("Number of events per mass point: %u"%(num_events))
     arguments = []
     counter = 0
-    mass_points = range(50, 200) * 100
+    mass_points = range(50, 200) * 50
     print("Mass points:",mass_points)
     for mass in mass_points:
         for boson_type in ["GGH", "QQH"]:
